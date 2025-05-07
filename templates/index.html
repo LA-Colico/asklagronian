@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Lagronian</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="{{ url_for('static', filename='images/lagro_logo.png') }}" alt="Profile">
+                </div>
+                <h1>Ask Lagronian</h1>
+            </div>
+            <div class="nav-items">
+                <div class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item active">
+                    <i class="fas fa-comment-alt"></i>
+                    <span>Ask Assistant</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Achievements</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>Schedule</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </div>
+            </div>
+            <div class="bottom-nav">
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="theme-toggle">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="search-settings">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="settings-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="profile-info">
+                        <span class="username">Guest</span>
+                        <span class="tokens">205 Tokens Left</span>
+                    </div>
+                    <div class="profile-pic">
+                        <img src="{{ url_for('static', filename='images/user_avatar.png') }}" alt="Profile">
+                    </div>
+                    <div class="dropdown-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active">Main</div>
+                <div class="tab">Settings</div>
+                <div class="tab">About Us</div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-container">
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            {% if message.role == 'assistant' %}
+                                <div class="message assistant-message">
+                                    <div class="message-avatar">
+                                        <img src="{{ url_for('static', filename='images/bot_avatar.png') }}" alt="Profile">
+                                    </div>
+                                    <div class="message-content">
+                                        {% if message.content is mapping and message.content.type == 'link' %}
+                                            <div class="external-link">
+                                                <div class="link-content">
+                                                    <h3>{{ message.content.title }}</h3>
+                                                    <p>{{ message.content.description }}</p>
+                                                    <a href="{{ message.content.url }}" target="_blank">{{ message.content.url }}</a>
+                                                </div>
+                                                <div class="link-icon">
+                                                    <i class="fas fa-link"></i>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="text-content">{{ message.content | safe }}</div>
+                                        {% endif %}
+                                        <div class="message-timestamp">{{ message.timestamp }}</div>
+                                    </div>
+                                </div>
+                            {% elif message.role == 'user' and message.content %}
+                                <div class="message user-message">
+                                    <div class="message-content">
+                                        <div class="text-content">{{ message.content }}</div>
+                                        <div class="message-timestamp">{{ message.timestamp }}</div>
+                                    </div>
+                                    <div class="user-avatar">
+                                        <img src="{{ url_for('static', filename='images/user_avatar.png') }}" alt="User">
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- Message Actions -->
+                    <div class="message-actions">
+                        <button class="action-btn"><i class="far fa-copy"></i></button>
+                        <button class="action-btn"><i class="fas fa-sync"></i></button>
+                        <button class="action-btn"><i class="far fa-thumbs-down"></i></button>
+                    </div>
+
+                    <!-- Message Input -->
+                    <div class="message-input">
+                        <div class="input-container">
+                            <i class="fas fa-pen"></i>
+                            <input type="text" id="user-input" placeholder="Message to Ask Lagronian...">
+                        </div>
+                        <div class="input-actions">
+                            <button class="action-btn"><i class="far fa-smile"></i></button>
+                            <button class="action-btn"><i class="fas fa-microphone"></i></button>
+                            <button class="send-btn" id="send-button">
+                                Send
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel -->
+                <div class="right-panel">
+                    <div class="panel-header">
+                        <h2>Ask Lagronian</h2>
+                    </div>
+
+                    <div class="panel-section">
+                        <div class="section-item">
+                            <i class="fab fa-google"></i>
+                            <span>Gemini 2.0</span>
+                        </div>
+
+                        <div class="section-item">
+                            <i class="fas fa-share-alt"></i>
+                            <span>Social Media</span>
+                        </div>
+
+                        <div class="section-item active">
+                            <i class="fa-solid fa-robot"></i>
+                            <span>Student Chatbot</span>
+                        </div>
+
+                        <div class="section-item">
+                            <i class="fa-solid fa-comments"></i>
+                            <span>Feedback</span>
+                        </div>
+                    </div>
+
+                    <div class="recent-chats">
+                        <div class="recent-header">
+                            <h3>Recent Chats</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+
+                        <div class="chat-list">
+                            {% for conversation in conversations %}
+                                <div class="chat-item">
+                                    <div class="chat-info">
+                                        <div class="chat-title">{{ conversation.title }}</div>
+                                        <div class="chat-timestamp">{{ conversation.timestamp }}</div>
+                                    </div>
+                                    <div class="chat-actions">
+                                        <i class="fas fa-edit"></i>
+                                        <i class="fas fa-trash"></i>
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
